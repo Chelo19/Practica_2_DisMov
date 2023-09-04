@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:namer_app/ui%20calculator/ui_calculator.dart';
 
 void main() => runApp(ColorEditApp());
 
@@ -8,7 +9,8 @@ class ColorEditApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: {
-        '/': (context) => ColorScreen(),
+        '/': (context) => CalculatorUI(),
+        // '/': (context) => ColorScreen(),
         '/edit': (context) => EditColorScreen(),
       },
     );
