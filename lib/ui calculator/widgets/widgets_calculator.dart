@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
 
-class MyTextInput extends StatelessWidget{
+class MyTextInput extends StatelessWidget {
   MyTextInput({super.key, required this.inputController, required this.label});
 
   final TextEditingController inputController;
   final String label;
 
   @override
-  Widget build(BuildContext context){
-    return SizedBox(
+  Widget build(BuildContext context) {
+    return Container(
       width: 300,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 70, right: 70),
-        child: TextFormField(
-          controller: inputController,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            border: const UnderlineInputBorder(),
-            prefixIcon: const Icon(Icons.person),
-            labelStyle: TextStyle(color: Colors.black87),
-            labelText: label,
+      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child: TextFormField(
+        controller: inputController,
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.blue),
+            borderRadius: BorderRadius.circular(10),
           ),
+          labelText: label,
+          labelStyle: TextStyle(color: Color.fromARGB(255, 25, 211, 133)),
+          prefixIcon: Icon(Icons.person, color: Color.fromARGB(255, 25, 211, 133)),
         ),
       ),
     );
@@ -30,15 +31,15 @@ class MyTextInput extends StatelessWidget{
 class MyText extends StatelessWidget {
   MyText({super.key, required this.text});
 
-  String text;
+  final String text;
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
       style: TextStyle(
-        color: Colors.black87,
-        fontSize: 17,
+        color: Color.fromARGB(255, 13, 141, 88),
+        fontSize: 20,
         fontWeight: FontWeight.bold,
       ),
     );
@@ -56,13 +57,13 @@ class MyButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: press,
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blue,
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        textStyle: const TextStyle(
+        primary: Color.fromARGB(255, 25, 211, 133),
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        textStyle: TextStyle(
           color: Colors.white,
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-        )
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
       ),
       child: lblText,
     );
@@ -71,76 +72,132 @@ class MyButton extends StatelessWidget {
 
 class MyContainer extends StatelessWidget {
   const MyContainer({super.key, required this.child});
+
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 600,
-      child: child,
-      margin: EdgeInsets.only(top: 20),
+      width: double.infinity,
+      padding: EdgeInsets.all(20),
+      margin: EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Color.fromARGB(31, 228, 226, 226).withOpacity(0.5),
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(40),
-          bottomLeft: Radius.circular(40),
-        )
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color:Color.fromARGB(255, 25, 211, 133).withOpacity(0.5),
+            blurRadius: 10,
+            spreadRadius: 2,
+            offset: Offset(0, 5),
+          ),
+        ],
       ),
+      child: child,
     );
   }
 }
 
 class MyAppContainer extends StatelessWidget {
-  const MyAppContainer({super.key});
+  const MyAppContainer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 150,
-      margin: EdgeInsets.only(top: 20),
+      margin: EdgeInsets.only(top: 20, left: 20, right: 20),
       decoration: BoxDecoration(
-        color: Color.fromARGB(255, 29, 206, 250).withOpacity(0.5),
+        color: Color.fromARGB(255, 25, 211, 133).withOpacity(0.7),
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(70),
-        )
+          bottomLeft: Radius.circular(40),
+        ),
+      ),
+      child: Center(
+        child: Text(
+          "Calculadora de Peso Ideal",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white, // Color del texto
+          ),
+        ),
       ),
     );
   }
 }
 
-class MyTable extends StatelessWidget {
+      class MyTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.7,
-      child: Table(border: TableBorder.all(),
-      children: [
-        TableRow(children: [
-          Text('Menor a 18.5'),
-          Text('Peso Bajo'),
-        ]),
-        TableRow(children: [
-          Text('18.6 a 24.9'),
-          Text('Peso Normal'),
-        ]),
-        TableRow(children: [
-          Text('25 a 29.9'),
-          Text('Sobrepeso'),
-        ]),
-        TableRow(children: [
-          Text('30 a 34.9'),
-          Text('Obesidad Leve'),
-        ]),
-        TableRow(children: [
-          Text('35 a 39.9'),
-          Text('Obesidad Media'),
-        ]),
-        TableRow(children: [
-          Text('Mayor a 40'),
-          Text('Obesidad Mórbida'),
-        ]),
-      ],
+      width: MediaQuery.of(context).size.width * 0.8,
+      padding: EdgeInsets.all(20),
+      margin: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blue.withOpacity(0.5),
+            blurRadius: 10,
+            spreadRadius: 2,
+            offset: Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Text(
+            'Tabla de Pesos',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.blue,
+            ),
+          ),
+          SizedBox(height: 20), // Espacio entre el título y la tabla
+          Table(
+            border: TableBorder(
+              horizontalInside: BorderSide(color: Colors.blue, width: 1.0),
+              verticalInside: BorderSide(color: Colors.blue, width: 1.0),
+            ),
+            children: [
+              _buildTableRow('Menor a 18.5', 'Peso Bajo'),
+              _buildTableRow('18.6 a 24.9', 'Peso Normal'),
+              _buildTableRow('25 a 29.9', 'Sobrepeso'),
+              _buildTableRow('30 a 34.9', 'Obesidad Leve'),
+              _buildTableRow('35 a 39.9', 'Obesidad Media'),
+              _buildTableRow('Mayor a 40', 'Obesidad Mórbida'),
+            ],
+          ),
+        ],
       ),
     );
   }
+
+  TableRow _buildTableRow(String leftText, String rightText) {
+    return TableRow(
+      children: [
+        TableCell(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              leftText,
+              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
+            ),
+          ),
+        ),
+        TableCell(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              rightText,
+              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }
+
