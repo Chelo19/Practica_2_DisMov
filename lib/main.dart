@@ -1,7 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:namer_app/ui%20calculator/ui_calculator.dart';
+import 'package:namer_app/promedio/promedio.dart';
 
-void main() => runApp(ColorEditApp());
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Promedio de Valores'),
+        ),
+        body: Center(
+          child: AverageCalculator(),
+        ),
+      ),
+    );
+  }
+}
 
 class ColorEditApp extends StatelessWidget {
   @override
@@ -17,42 +36,42 @@ class ColorEditApp extends StatelessWidget {
   }
 }
 
-class ColorScreen extends StatefulWidget {
-  @override
-  _ColorScreenState createState() => _ColorScreenState();
-}
+// class ColorScreen extends StatefulWidget {
+//   @override
+//   _ColorScreenState createState() => _ColorScreenState();
+// }
 
-class _ColorScreenState extends State<ColorScreen> {
-  Color _color = Color.fromARGB(255, 255, 0, 0);
+// class _ColorScreenState extends State<ColorScreen> {
+//   Color _color = Color.fromARGB(255, 255, 0, 0);
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: _color,
-      body: Padding(
-        padding: EdgeInsets.all(20),
-        child: Align(
-          alignment: Alignment.bottomCenter,
-          child: ElevatedButton(
-            child: Text('Cambiar Color'),
-            onPressed: () {
-              Navigator.of(context).pushNamed(
-                '/edit',
-                arguments: _color,
-              ).then((result){
-                  if(result != null){
-                    setState((){
-                      _color = result as Color;
-                    });
-                  }
-              });
-            },
-          ),
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: _color,
+//       body: Padding(
+//         padding: EdgeInsets.all(20),
+//         child: Align(
+//           alignment: Alignment.bottomCenter,
+//           child: ElevatedButton(
+//             child: Text('Cambiar Color'),
+//             onPressed: () {
+//               Navigator.of(context).pushNamed(
+//                 '/edit',
+//                 arguments: _color,
+//               ).then((result){
+//                   if(result != null){
+//                     setState((){
+//                       _color = result as Color;
+//                     });
+//                   }
+//               });
+//             },
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class EditColorScreen extends StatefulWidget {
   @override
