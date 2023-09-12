@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:isolate';
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 class AverageCalculator extends StatefulWidget {
   @override
@@ -8,46 +9,51 @@ class AverageCalculator extends StatefulWidget {
 }
 
 class _AverageCalculatorState extends State<AverageCalculator> {
-  double? _average;
-  bool _calculating = true;
+  List<double?> _averages = List.filled(5, null);
+  List<bool> _calculating = List.filled(5, true);
 
   @override
   void initState() {
     super.initState();
-    _calculateAverage();
+    _calculateAverages();
   }
 
-  Future<void> _calculateAverage() async {
-    final receivePort = ReceivePort();
-    final completer = Completer<void>();
+  Future<void> _calculateAverages() async {
+    for (var i = 0; i < 5; i++) {
+      final receivePort = ReceivePort();
+      final completer = Completer<void>();
 
-    Isolate isolate;
-    isolate = await Isolate.spawn(
-      _isolateFunction,
-      {'receivePort': receivePort},
-    );
+      Isolate isolate;
+      isolate = await Isolate.spawn(
+        _isolateFunction,
+        {'receivePort': receivePort.sendPort},
+      );
 
-    receivePort.listen((message) {
-      if (message is double) {
-        setState(() {
-          _average = message;
-          _calculating = false;
-        });
+      receivePort.listen((message) {
+        if (message is double) {
+          setState(() {
+            _averages[i] = message;
+            _calculating[i] = false;
+          });
 
-        completer.complete();
-      }
-    });
+          completer.complete();
+        }
+      });
 
-    await completer.future;
-    isolate.kill();
+      await completer.future;
+      receivePort.close();
+      isolate.kill();
+    }
   }
 
   static void _isolateFunction(Map<String, dynamic> message) {
     final sendPort = message['receivePort'] as SendPort;
 
-    final data = List.generate(10000, (index) => index + 1);
-    final sum = data.reduce((value, element) => value + element).toDouble();
-    final average = sum / data.length;
+    final random = Random();
+    final data = List.generate(10000, (index) => random.nextInt(1000));
+
+    final sum = data.reduce((value, element) => value + element);
+    final average = data.isNotEmpty ? sum / data.length : 0.0;
 
     sendPort.send(average);
   }
@@ -55,11 +61,27 @@ class _AverageCalculatorState extends State<AverageCalculator> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: _calculating
-          ? CircularProgressIndicator()
-          : _average == null
-              ? Text("Calculating...")
-              : Text("Average: $_average"),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: List.generate(5, (i) {
+          return _calculating[i]
+              ? CircularProgressIndicator()
+              : _averages[i] == null
+                  ? Text("Calculating...")
+                  : Text("Average ${i + 1}: ${_averages[i]}");
+        }),
+      ),
     );
   }
+}
+
+void main() {
+  runApp(MaterialApp(
+    home: Scaffold(
+      appBar: AppBar(
+        title: Text('Average Calculator'),
+      ),
+      body: AverageCalculator(),
+    ),
+  ));
 }
