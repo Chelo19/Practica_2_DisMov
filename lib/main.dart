@@ -56,8 +56,13 @@ class _GalleryScreenState extends State<GalleryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Galería de E-commerce'),
+        title: Text('Productos Disponibles',
+        style: TextStyle(
+          fontStyle: FontStyle.italic,
+        ),),
+        backgroundColor: Colors.orange[500],
       ),
+      backgroundColor: Colors.orange[50],
       body: GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2, // Puedes ajustar el número de columnas aquí
