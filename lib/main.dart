@@ -4,6 +4,8 @@ import 'dart:isolate';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import 'cart_screen.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -22,81 +24,83 @@ class GalleryScreen extends StatefulWidget {
   _GalleryScreenState createState() => _GalleryScreenState();
 }
 
+List<Product> shoppingCart = [];
+
 class _GalleryScreenState extends State<GalleryScreen> {
   List<Product> products = [];
 
-  @override
-  void initState() {
-    super.initState();
-    fetchData();
-  }
-
-  Future<void> fetchData() async {
-    ReceivePort receivePort = ReceivePort();
-    Isolate.spawn(_fetchDataInIsolate, receivePort.sendPort);
-
-    List<Product> productData = await receivePort.first;
+  void addToCart(Product product) {
     setState(() {
-      products = productData;
+      shoppingCart.add(product);
     });
-  }
-
-  static void _fetchDataInIsolate(SendPort sendPort) async {
-    final response = await http.get(Uri.parse('https://jsonplaceholder.typicode.com/posts'));
-    if (response.statusCode == 200) {
-      final List<dynamic> jsonList = json.decode(response.body);
-      final List<Product> products = jsonList.map((e) => Product.fromJson(e)).toList();
-      sendPort.send(products);
-    } else {
-      sendPort.send([]);
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Productos Disponibles',
-        style: TextStyle(
-          fontStyle: FontStyle.italic,
-        ),),
+        title: Text('Productos Disponibles 3',
+          style: TextStyle(
+            fontStyle: FontStyle.italic,
+          ),
+        ),
         backgroundColor: Colors.orange[500],
       ),
       backgroundColor: Colors.orange[50],
       body: GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2, // Puedes ajustar el número de columnas aquí
+          crossAxisCount: 2,
         ),
         itemCount: products.length,
         itemBuilder: (context, index) {
-          return ProductCard(product: products[index]);
+          return ProductCard(
+            product: products[index],
+            addToCart: addToCart, // Pass addToCart function
+            navigateToCartScreen: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CartScreen(),
+                ),
+              );
+            }, // Pass function to navigate to CartScreen
+          );
         },
       ),
     );
   }
 }
 
+
 class Product {
   final int id;
   final String title;
+  int get price => 10; // Ensure that 'price' is not nullable
 
   Product({
     required this.id,
-    required this.title,
+    required this.title, // Make 'price' required
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
       id: json['id'],
       title: json['title'],
+      // Provide a default price if necessary
     );
   }
 }
 
 class ProductCard extends StatelessWidget {
   final Product product;
+  final void Function(Product) addToCart;
+  final void Function() navigateToCartScreen;
 
-  ProductCard({required this.product});
+  ProductCard({
+    required this.product,
+    required this.addToCart,
+    required this.navigateToCartScreen,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +109,7 @@ class ProductCard extends StatelessWidget {
         children: [
           const Icon(
             Icons.shopping_cart,
-            size: 100.0,
+            size: 60.0,
             color: Color.fromARGB(255, 123, 228, 25),
           ),
           Text(
@@ -114,6 +118,14 @@ class ProductCard extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           Text('ID: ${product.id}'),
+          Text('Price: ${product.price}' ),
+          ElevatedButton(
+            onPressed: () {
+              addToCart(product); // Call addToCart function
+              navigateToCartScreen(); // Call function to navigate to CartScreen
+            },
+            child: Text('Agregar'),
+          ),
         ],
       ),
     );
