@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:isolate';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
 import 'cart_screen.dart';
 
 void main() {
@@ -36,10 +35,37 @@ class _GalleryScreenState extends State<GalleryScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    ReceivePort receivePort = ReceivePort();
+    Isolate.spawn(_fetchDataInIsolate, receivePort.sendPort);
+
+    List<Product> productData = await receivePort.first;
+    setState(() {
+      products = productData;
+    });
+  }
+
+  static void _fetchDataInIsolate(SendPort sendPort) async {
+    final response = await http.get(Uri.parse('https://jsonplaceholder.typicode.com/posts'));
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonList = json.decode(response.body);
+      final List<Product> products = jsonList.map((e) => Product.fromJson(e)).toList();
+      sendPort.send(products);
+    } else {
+      sendPort.send([]);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Productos Disponibles 3',
+        title: Text('Productos Disponibles',
           style: TextStyle(
             fontStyle: FontStyle.italic,
           ),
@@ -67,6 +93,19 @@ class _GalleryScreenState extends State<GalleryScreen> {
           );
         },
       ),
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CartScreen(),
+            ),
+          );
+        },
+        backgroundColor: Colors.orange[500], //33,150,243, 100
+        child: Icon(Icons.shopping_cart),
+      ),
     );
   }
 }
@@ -75,18 +114,19 @@ class _GalleryScreenState extends State<GalleryScreen> {
 class Product {
   final int id;
   final String title;
-  int get price => 10; // Ensure that 'price' is not nullable
+  int get price => 10; //final double price; // Ensure that 'price' is not nullable
 
   Product({
     required this.id,
     required this.title, // Make 'price' required
+     //QUITAR required this.price,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
       id: json['id'],
       title: json['title'],
-      // Provide a default price if necessary
+      // QUITAR price: 10.0,
     );
   }
 }
@@ -110,7 +150,7 @@ class ProductCard extends StatelessWidget {
           const Icon(
             Icons.shopping_cart,
             size: 60.0,
-            color: Color.fromARGB(255, 123, 228, 25),
+            color: Color.fromARGB(255, 33, 150, 243), //33,150,243, 100
           ),
           Text(
             product.title,
@@ -124,7 +164,7 @@ class ProductCard extends StatelessWidget {
               addToCart(product); // Call addToCart function
               navigateToCartScreen(); // Call function to navigate to CartScreen
             },
-            child: Text('Agregar'),
+            child: Text('Add to cart'),
           ),
         ],
       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'main.dart'; // Import the Product class and shoppingCart list from main.dart
+import 'purchase_screen.dart';
 
 class CartScreen extends StatefulWidget {
   @override
@@ -7,6 +8,19 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
+
+  void makePurchase(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PurchaseScreen(
+          purchasedProducts: shoppingCart,
+          totalCost: calculateTotalCost(),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,6 +60,13 @@ class _CartScreenState extends State<CartScreen> {
           'Total Cost: \$${calculateTotalCost().toStringAsFixed(2)}', // Display the total cost
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
+        ElevatedButton(
+          onPressed: () {
+            makePurchase(context);
+          },
+          child: Text('Make Purchase'),
+        )
+
       ],
     );
   }
@@ -61,7 +82,7 @@ class CartItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(product.title),
-      subtitle: Text('ID: ${product.id}' + '    Price: ${product.price}'),
+      subtitle: Text('ID: ${product.id}' + '    ' + 'Price: ${product.price}'),
       // You can display additional product information here.
     );
   }
