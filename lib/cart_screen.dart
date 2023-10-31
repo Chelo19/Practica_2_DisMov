@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'main.dart'; // Import the Product class and shoppingCart list from main.dart
+import 'main.dart'; // Importa la clase Product y la lista shoppingCart de main.dart
 import 'purchase_screen.dart';
 
 class CartScreen extends StatefulWidget {
@@ -8,6 +8,7 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
+  String email = ''; // Variable para el correo electrónico
 
   void makePurchase(BuildContext context) {
     Navigator.push(
@@ -16,6 +17,7 @@ class _CartScreenState extends State<CartScreen> {
         builder: (context) => PurchaseScreen(
           purchasedProducts: shoppingCart,
           totalCost: calculateTotalCost(),
+          email: email, // Pasa el correo electrónico a la pantalla de compra
         ),
       ),
     );
@@ -25,7 +27,8 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Shopping cart',
+        title: Text(
+          'Carrito de Compras',
           style: TextStyle(
             fontStyle: FontStyle.italic,
           ),
@@ -44,7 +47,6 @@ class _CartScreenState extends State<CartScreen> {
     return totalCost;
   }
 
-
   Widget buildCartContents() {
     return Column(
       children: [
@@ -56,22 +58,34 @@ class _CartScreenState extends State<CartScreen> {
             },
           ),
         ),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: TextField(
+            decoration: InputDecoration(
+              labelText: 'Correo Electrónico', // Etiqueta para el campo de correo electrónico
+              border: OutlineInputBorder(),
+            ),
+            onChanged: (value) {
+              setState(() {
+                email = value; // Actualiza la variable con el correo electrónico
+              });
+            },
+          ),
+        ),
         Text(
-          'Total Cost: \$${calculateTotalCost().toStringAsFixed(2)}', // Display the total cost
+          'Total Costo: \$${calculateTotalCost().toStringAsFixed(2)}', // Muestra el costo total
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         ElevatedButton(
           onPressed: () {
             makePurchase(context);
           },
-          child: Text('Make Purchase'),
-        )
-
+          child: Text('Hacer Compra'),
+        ),
       ],
     );
   }
 }
-
 
 class CartItem extends StatelessWidget {
   final Product product;
@@ -82,8 +96,8 @@ class CartItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(product.title),
-      subtitle: Text('ID: ${product.id}' + '    ' + 'Price: ${product.price}'),
-      // You can display additional product information here.
+      subtitle: Text('ID: ${product.id}' + '    ' + 'Precio: ${product.price}'),
+      // Puedes mostrar información adicional del producto aquí.
     );
   }
 }
