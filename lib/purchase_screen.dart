@@ -9,13 +9,14 @@ class PurchaseScreen extends StatelessWidget {
   PurchaseScreen({
     required this.purchasedProducts,
     required this.totalCost,
+    required String email, // Agrega el argumento 'email'
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Confirmacion de Compra',
+        title: Text('Purchase Confirmation',
           style: TextStyle(
             fontStyle: FontStyle.italic,
           ),
@@ -25,12 +26,12 @@ class PurchaseScreen extends StatelessWidget {
       body: Column(
         children: [
           SizedBox(height: 16),
-          Text('      Gracias por tu compra! Te enviamos factura a tu correo! ',
+          Text('           Gracias por tu compra! ',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,),
           SizedBox(height: 16), // Add some spacing
           Text(
-            'Costo Total: \$${totalCost.toStringAsFixed(2)}', // Display the total cost
+            'Total Cost: \$${totalCost.toStringAsFixed(2)}', // Display the total cost
             style: TextStyle(fontSize: 18),
             textAlign: TextAlign.center,
           ),
